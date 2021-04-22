@@ -1,6 +1,7 @@
-import {CHANGE_BROKER_DETAIL} from '../constants'
+import {ADDING_BROKER_DETAIL} from '../constants'
 
-const initialState = [
+const initialState = {
+  data : [
   {
     sekuritas: 'Indo Premier Sekuritas',
     kode_broker:'PD',
@@ -55,15 +56,15 @@ const initialState = [
     fee_beli_intra: 0.00125,
     fee_jual_intra:0.00225,
   },
-];
+]};
 
 const brokerReducer = (state = initialState, action) => {
   switch(action.type){
-    case CHANGE_BROKER_DETAIL:
-      return[
+    case ADDING_BROKER_DETAIL:
+      return{
         ...state,
-        ...payload, 
-      ]
+        data: [...state.data, action.payload]
+      }
     default:
       return state;
   }

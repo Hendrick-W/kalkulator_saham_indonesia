@@ -16,9 +16,6 @@ const stylesButton =({backgroundColor})=> StyleSheet.create({
     borderRadius: 10,
     margin:10,
     alignItems: 'center'
-  },
-  text:{
-    fontSize:20
   }
 })
 const stylesText = StyleSheet.create({

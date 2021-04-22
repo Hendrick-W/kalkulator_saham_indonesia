@@ -15,8 +15,6 @@ const HomeScreen = ({navigation}) => {
   const exitApp = () => {
     BackHandler.exitApp()
   }
-  const broker = useSelector(state=>state.broker)
-  console.log(broker)
   return (
     <SafeAreaView style={styles.container}>
       <Title title={"Kalkulator Saham Indonesia"}/>
@@ -36,7 +34,8 @@ const styles = StyleSheet.create({
   container:{
     flex:1,
     justifyContent:'center',
-    alignItems:'center'
+    alignItems:'center',
+    backgroundColor: '#faebd7'
   },
   buttonContainer:{
     width: "80%",

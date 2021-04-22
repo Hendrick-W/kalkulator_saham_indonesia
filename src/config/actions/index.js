@@ -1,8 +1,8 @@
-import {CHANGE_BROKER_DETAIL} from '../constants'
+import {ADDING_BROKER_DETAIL} from '../constants'
 
-export function changeBrokerDetail(params) {
+export function addBrokerDetail(params) {
   return {
-    type:CHANGE_BROKER_DETAIL,
+    type:ADDING_BROKER_DETAIL,
     payload:params
   }
 }
