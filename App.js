@@ -9,6 +9,9 @@
 import React, {useState, useEffect} from 'react';
 import SplashScreen from './src/screens/SplashScreen'
 import MainNavigation from './src/navigation/MainNavigation'
+import {Provider} from 'react-redux'
+import {PersistGate} from 'redux-persist/integration/react'
+import {configureStore, persistor} from './src/config/store'
 
 const App = () => {
   
@@ -22,7 +25,11 @@ const App = () => {
   return splash ? 
   (<SplashScreen/>):
   (
-    <MainNavigation/>
+    <Provider store={configureStore}>
+      <PersistGate loading={null} persistor={persistor}>
+        <MainNavigation/>
+      </PersistGate>
+    </Provider>
   );
 };
 
