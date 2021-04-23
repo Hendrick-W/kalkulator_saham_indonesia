@@ -1,11 +1,16 @@
 import React, {useState, useCallback} from 'react'
-import { StyleSheet, Text, View, SafeAreaView, FlatList } from 'react-native'
+import { 
+  StyleSheet, Text, View, SafeAreaView, FlatList
+} from 'react-native'
 import {useSelector, useDispatch} from 'react-redux'
 
 import SearchBar from '../components/SearchBar'
 import Button from '../components/Button'
+import BrokerList from '../components/BrokerList'
 
-import {addBrokerDetail} from '../config/actions'
+import {
+  addBrokerDetail, defaultsBrokerDetail,
+} from '../config/actions'
 
 const FeeScreen = () => {
   const [textInput, setTextInput] = useState("")
@@ -14,16 +19,14 @@ const FeeScreen = () => {
   }, [])
   const listBroker = useSelector(state=>state.broker.data)
   const dispatch = useDispatch();
+  
   const addingBrokerDetail = () => {
-    dispatch(addBrokerDetail({
-      sekuritas: 'Ajaib Sekuritas Asia',
-      kode_broker:'XC',
-      aplikasi: 'Ajaib',
-      fee_beli: 0.0015,
-      fee_jual: 0.0025,
-      fee_beli_intra: 0,
-      fee_jual_intra:0
-    }))
+    console.log('Add teruslah')
+    //dispatch(addBrokerDetail({}))
+  }
+  const defaultBrokerDetail = () => {
+    console.log('Default broker')
+    dispatch(defaultsBrokerDetail())
   }
   console.log(listBroker)
   return (
@@ -36,13 +39,23 @@ const FeeScreen = () => {
         <FlatList
           data={listBroker}
           renderItem={({item, index}) => {
-            return <Text>{item.sekuritas}</Text>
+            return <BrokerList
+              index = {item.index}
+              sekuritas = {item.sekuritas}
+              kode_broker = {item.kode_broker}
+              aplikasi = {item.aplikasi}
+              fee_beli = {item.fee_beli}
+              fee_jual = {item.fee_jual}
+              fee_beli_intra = {item.fee_beli_intra}
+              fee_jual_intra = {item.fee_jual_intra}
+            />
           }}
           keyExtractor={(item, index)=>index.toString()}
         />
       </View>
       <View>
-        <View style={{width: "50%"}}>
+        <View style={{width: "50%", flexDirection:'row'}}>
+          <Button onPress={defaultBrokerDetail} title={"Default"} backgroundColor="#ff595e"/>
           <Button onPress={addingBrokerDetail} title={"Tambah Broker"} backgroundColor="#4DC7A4"/>
         </View>
       </View>
@@ -55,11 +68,10 @@ export default FeeScreen
 const styles = StyleSheet.create({
   container:{
     flex:1,
-    backgroundColor: '#faebd7'
   },
   listBroker:{
     borderWidth: 1, 
-    height: "50%",
+    height: "60%",
     margin: 10,
     borderRadius: 20,
     overflow:'hidden',

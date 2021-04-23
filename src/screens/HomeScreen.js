@@ -19,12 +19,12 @@ const HomeScreen = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <Title title={"Kalkulator Saham Indonesia"}/>
       <View style={styles.buttonContainer}>
-        <Button onPress={navigateToProfitScreen} title={"Profit Transaksi"} backgroundColor="#4DC7A4"/>
-        <Button onPress={navigateToFeeTransaksi} title={"Fee Transaksi"} backgroundColor="#00bcd4"/>
+        <Button onPress={navigateToProfitScreen} title={"Profit Transaksi"} backgroundColor="#8ac926"/>
+        <Button onPress={navigateToFeeTransaksi} title={"Fee Transaksi"} backgroundColor="#1982c4"/>
       </View>
       <View style={{position:'absolute', bottom:0, alignItems:'center'}}>
         <Text>Versi: 1.0.0</Text>
-        <Button title={"Exit App"} onPress={exitApp} backgroundColor="#ff5c5c"/>
+        <Button title={"Exit App"} onPress={exitApp} backgroundColor="#ff595e"/>
       </View>
     </SafeAreaView>
   )
@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     flex:1,
     justifyContent:'center',
     alignItems:'center',
-    backgroundColor: '#faebd7'
   },
   buttonContainer:{
     width: "80%",
