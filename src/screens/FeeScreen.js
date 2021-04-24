@@ -7,17 +7,18 @@ import {useSelector, useDispatch} from 'react-redux'
 import SearchBar from '../components/SearchBar'
 import Button from '../components/Button'
 import BrokerList from '../components/BrokerList'
+import ModalBroker from '../components/ModalBroker'
+import ModalDefault from '../components/ModalDefault'
 
 import {
   addBrokerDetail, defaultsBrokerDetail,
 } from '../config/actions'
 
+
 const FeeScreen = () => {
   const [textInput, setTextInput] = useState("")
-  const onChangeText = useCallback( (value) => {
-    setTextInput(value)
-  }, [])
   const listBroker = useSelector(state=>state.broker.data)
+  const [showList, setShowList] = useState(listBroker)
   const dispatch = useDispatch();
   
   const addingBrokerDetail = () => {
@@ -28,6 +29,16 @@ const FeeScreen = () => {
     console.log('Default broker')
     dispatch(defaultsBrokerDetail())
   }
+  const onChangeText = useCallback( (value) => {
+    setTextInput(value)
+    if(value.length > 0){
+      setShowList(listBroker.filter(item => {
+        return item.sekuritas.toLowerCase().includes(value.toLowerCase()) || item.kode_broker.toLowerCase().includes(value.toLowerCase()) || item.aplikasi.toLowerCase().includes(value.toLowerCase())
+      }))
+    } else {
+      setShowList(listBroker)
+    }
+  }, [])
   console.log(listBroker)
   return (
     <SafeAreaView style={styles.container}>
@@ -37,7 +48,7 @@ const FeeScreen = () => {
       </View>
       <View style={styles.listBroker}>
         <FlatList
-          data={listBroker}
+          data={showList}
           renderItem={({item, index}) => {
             return <BrokerList
               index = {item.index}
@@ -53,11 +64,9 @@ const FeeScreen = () => {
           keyExtractor={(item, index)=>index.toString()}
         />
       </View>
-      <View>
-        <View style={{width: "50%", flexDirection:'row'}}>
-          <Button onPress={defaultBrokerDetail} title={"Default"} backgroundColor="#ff595e"/>
-          <Button onPress={addingBrokerDetail} title={"Tambah Broker"} backgroundColor="#4DC7A4"/>
-        </View>
+      <View style={{ height:100, flexDirection:'row'}}>
+        <ModalDefault/>
+        <ModalBroker/>
       </View>
     </SafeAreaView>
   )
@@ -70,11 +79,11 @@ const styles = StyleSheet.create({
     flex:1,
   },
   listBroker:{
-    borderWidth: 1, 
+    borderWidth: 10, 
     height: "60%",
     margin: 10,
     borderRadius: 20,
     overflow:'hidden',
-    padding: 5
+    padding: 5,
   }
 })
