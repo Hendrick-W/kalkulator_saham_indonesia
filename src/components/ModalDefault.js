@@ -38,7 +38,7 @@ const ModalDefault = () => {
         style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.textStyle}>List Broker dr Developer</Text>
+        <Text style={styles.textStyle}>Reset</Text>
       </Pressable>
     </View>
   )
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
   },
   buttonOpen: {
     backgroundColor: "#8c2020",
+    width: 180,
   },
   buttonClose: {
     backgroundColor: "#8c2020",

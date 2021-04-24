@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
   },
   buttonOpen: {
     backgroundColor: "#4DC7A4",
+    width: 180,
   },
   buttonClose: {
     backgroundColor: "#8c2020",
