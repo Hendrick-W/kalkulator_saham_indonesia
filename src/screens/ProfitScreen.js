@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { 
-  StyleSheet, SafeAreaView, Text, View, TextInput, Switch, TouchableOpacity,
+  StyleSheet, SafeAreaView, Text, View, TextInput, Switch, Pressable, Alert, TouchableWithoutFeedback, Keyboard
 } from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {useSelector, useDispatch} from 'react-redux'
@@ -12,17 +12,31 @@ const ProfitScreen = () => {
   const [isIntraDay, setIntraDay] = useState(false)
   const [selectedBroker, setSelectedBroker] = useState(-1)
   const listBroker = useSelector(state=>state.broker.data);
-  const [selectedLanguage, setSelectedLanguage] = useState();
-  console.log(selectedBroker)
+
+  const [totalBeli, setTotalBeli] = useState()
+  const [totalJual, setTotalJual] = useState()
+  const [totalTransaksi, setTotalTransaksi] = useState()
+  const [presentase, setPresentase] = useState()
+
+  // console.log(selectedBroker, isIntraDay)
+
   const handleHargaBeli = (value) => {
-    setHargaBeli(
-      value.replace(/[^0-9]/g, '')
-    )
+    if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
+      setHargaBeli(
+        value.replace(/[^0-9\.]/g, '')
+      )
+    } else {
+      if(value.match(/(?:^| )\d+(\.\d+)?(?=$| )|(?:^| )\.\d+(?=$| )/gm) || value === '') setHargaBeli(value)
+    }
   }
   const handleHargaJual = (value) => {
-    setHargaJual(
-      value.replace(/[^0-9]/g, '')
-    )
+    if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
+      setHargaJual(
+        value.replace(/[^0-9\.]/g, '')
+      )
+    } else {
+      if(value.match(/(?:^| )\d+(\.\d+)?(?=$| )|(?:^| )\.\d+(?=$| )/gm) || value === '') setHargaJual(value)
+    }
   }
   const handleJumlahLot = (value) => {
     setJmlLot(
@@ -32,8 +46,51 @@ const ProfitScreen = () => {
   const handleIntraDay = () => {
     setIntraDay(previousState => !previousState)
   }
+  const handleReset = () => {
+    Keyboard.dismiss()
+    setHargaBeli()
+    setHargaJual()
+    setJmlLot()
+    setIntraDay(false)
+    setSelectedBroker(-1)
+    setTotalBeli()
+    setTotalJual()
+    setTotalTransaksi()
+  }
+
+  const handleHitung = () => {
+    Keyboard.dismiss()
+    if (hargaBeli === undefined || hargaBeli === "" || hargaJual === undefined || hargaJual === "" || jmlLot === undefined || jmlLot === "" || selectedBroker === -1){
+      Alert.alert(
+        "Pesan",
+        "Pastikan Harga Beli, Harga Jual, Jumlah Lot, dan Aplikasi/Broker telah terisi dan dipilih",
+        [
+          {
+            text : "Ok",
+            style: "cancel"
+          }
+        ]
+      )
+    } else {
+      const fee_beli = isIntraDay ? listBroker[selectedBroker].fee_beli_intra/100 + 1 : listBroker[selectedBroker].fee_beli/100 + 1
+      const total_beli = Math.ceil(hargaBeli * jmlLot * 100 * fee_beli)
+      
+      const fee_jual = isIntraDay ? 1 - listBroker[selectedBroker].fee_jual_intra/100 : 1 - listBroker[selectedBroker].fee_jual/100
+      const total_jual = Math.ceil(hargaJual * jmlLot * 100 * fee_jual)
+
+      const total_transaksi = total_jual - total_beli;
+      const presentase_profit_loss = +((total_transaksi / total_beli * 100).toFixed(2))
+
+      setTotalBeli(total_beli)
+      setTotalJual(total_jual)
+      setTotalTransaksi(total_transaksi)
+      setPresentase(presentase_profit_loss)
+    }
+
+  }
 
   return (
+    <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
     <SafeAreaView style={styles.container}>
       <View style={styles.formContainer}>
       <Text style={styles.title}>Hitung Profit/Loss Transaksi</Text>
@@ -45,7 +102,7 @@ const ProfitScreen = () => {
               underlineColorAndroid="transparent"
               value={hargaBeli}
               placeholder="Contoh: 800, 1000, atau 2500"
-              keyboardType='numeric'
+              keyboardType='decimal-pad'
               onChangeText={handleHargaBeli}
             />
           </View>
@@ -58,7 +115,7 @@ const ProfitScreen = () => {
               underlineColorAndroid="transparent"
               value={hargaJual}
               placeholder="Contoh: 800, 1000, atau 2500"
-              keyboardType='numeric'
+              keyboardType='decimal-pad'
               onChangeText={handleHargaJual}
             />
           </View>
@@ -128,19 +185,47 @@ const ProfitScreen = () => {
             </>
           }
         </View>
-        <Text style={{color:"red", fontWeight:'100', textAlign:'center'}}>*Fee ini bisa berbeda-beda sesuai dengan keadaan Bapak/Ibu, silakan ganti di halaman "Fee Transaksi"</Text>
+        <Text style={{color:"red", fontWeight:'100', textAlign:'center'}}>*Fee ini bisa berbeda dengan keadaan Bapak/Ibu sekarang, silakan ganti di halaman "Fee Transaksi"</Text>
         </>
         }
       </View>
       <View style={styles.buttonGroup}>
-        <TouchableOpacity style={[styles.button, styles.buttonReset]}>
+        <Pressable style={[styles.button, styles.buttonReset]} onPress={handleReset}>
           <Text style={styles.textStyle}>Reset</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.buttonHitung]}>
+        </Pressable>
+        <Pressable style={[styles.button, styles.buttonHitung]} onPress={handleHitung}>
           <Text style={styles.textStyle}>Hitung</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
+      <View style={styles.tableContainer}>
+        <View style={{flexDirection:'row'}}>
+          <View style={[styles.headerBuy]}>
+            <Text style={styles.textStyle}>Total Beli</Text>
+          </View>
+          <View style={[styles.headerSell]}>
+            <Text style={styles.textStyle}>Total Jual</Text>
+          </View>
+        </View>
+        <View style={{flexDirection:'row'}}>
+          <View style={styles.netValue}>
+            <Text style={{ textAlign: "center", fontSize: 20}}>{isNaN(totalBeli) === false ? `Rp ${totalBeli}` : ''}</Text>
+          </View>
+          <View style={styles.netValue}>
+            <Text style={{ textAlign: "center", fontSize: 20}}>{isNaN(totalJual) === false ? `Rp ${totalJual}` : ''}</Text>
+          </View>
+        </View>
+        <View style={{backgroundColor: totalTransaksi > 0 ? '#00C9A7' : totalTransaksi < 0 ? '#C34A36' : "#B0A8B9"}}>
+          <Text style={styles.textStyle}>Profit/Loss/Netral</Text>
+        </View>
+        <View style={{flexDirection:'row'}}>
+          <View style={styles.netValue}>
+            <Text style={{ textAlign: "center", fontSize: 20}}>{isNaN(totalTransaksi) === false ? `Rp ${totalTransaksi}` : ''}</Text>
+          </View>
+        </View>
+      </View>
+
     </SafeAreaView>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -192,7 +277,6 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    padding: 10,
     elevation: 2,
     height:50,
     justifyContent:'center',
@@ -214,6 +298,33 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 18
+    fontSize: 20
   },
+  tableContainer: {
+    backgroundColor:'white',
+    borderColor: '#D6D7DA',
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 15,
+    marginTop: 5,
+    marginBottom: 0,
+  },
+  headerBuy: {
+    flex: 1,
+    backgroundColor: '#00C9A7',
+    borderRadius: 3
+  },
+  headerSell: {
+    flex: 1,
+    backgroundColor: '#C34A36',
+    borderRadius: 3
+  },
+  netValue: {
+    flex: 1,
+    borderWidth: 1,
+    height: 40
+  },
+  totalTransaksi: {
+    flex: 1
+  }
 })
