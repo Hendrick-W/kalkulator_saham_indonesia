@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { 
-  StyleSheet, SafeAreaView, Text, View, TextInput, Switch, Pressable, Alert, TouchableWithoutFeedback, Keyboard
+  StyleSheet, SafeAreaView, Text, View, TextInput, Switch, Pressable, Alert, TouchableWithoutFeedback, Keyboard,
 } from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {useSelector, useDispatch} from 'react-redux'
+import numeral from 'numeral'
 
 const ProfitScreen = () => {
   const [hargaBeli, setHargaBeli] = useState()
@@ -19,7 +20,10 @@ const ProfitScreen = () => {
   const [presentase, setPresentase] = useState()
 
   // console.log(selectedBroker, isIntraDay)
-
+  const formatter = new Intl.NumberFormat('ja-JP', {
+    style: 'currency',
+    currency: 'IDR',
+  })
   const handleHargaBeli = (value) => {
     if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
       setHargaBeli(
@@ -80,6 +84,10 @@ const ProfitScreen = () => {
 
       const total_transaksi = total_jual - total_beli;
       const presentase_profit_loss = +((total_transaksi / total_beli * 100).toFixed(2))
+      console.log("harga belo",hargaBeli)
+      console.log("jumlah lot", jmlLot)
+      console.log('fee_beli', fee_beli)
+      console.log(total_beli)
 
       setTotalBeli(total_beli)
       setTotalJual(total_jual)
@@ -88,7 +96,7 @@ const ProfitScreen = () => {
     }
 
   }
-
+  
   return (
     <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
     <SafeAreaView style={styles.container}>
@@ -144,7 +152,9 @@ const ProfitScreen = () => {
         </View>
         <View style={[styles.attributeContainer]}>
           <Text style={styles.textInputTitle}>Aplikasi/Broker</Text>
+          <View style={{borderWidth: 1, borderRadius: 4}}>
           <Picker
+            style={{borderWidth:1}}
             selectedValue={selectedBroker}
             onValueChange={(itemValue, itemIndex) => {
               setSelectedBroker(itemValue)}}
@@ -155,6 +165,7 @@ const ProfitScreen = () => {
               return <Picker.Item key={`${item.index}`} label={`${item.aplikasi}/${item.sekuritas}`} value={`${item.index}`} />
             })}
           </Picker>
+          </View>
         </View>
         {selectedBroker != -1 &&<> 
         <View style={[styles.descriptionContainer]}>
@@ -208,10 +219,10 @@ const ProfitScreen = () => {
         </View>
         <View style={{flexDirection:'row'}}>
           <View style={styles.netValue}>
-            <Text style={{ textAlign: "center", fontSize: 20}}>{isNaN(totalBeli) === false ? `Rp ${totalBeli}` : ''}</Text>
+            <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{isNaN(totalBeli) === false ? `Rp ${formatter.format(totalBeli)}` : ''}</Text>
           </View>
           <View style={styles.netValue}>
-            <Text style={{ textAlign: "center", fontSize: 20}}>{isNaN(totalJual) === false ? `Rp ${totalJual}` : ''}</Text>
+            <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{isNaN(totalJual) === false ? `Rp ${totalJual}` : ''}</Text>
           </View>
         </View>
         <View style={{backgroundColor: totalTransaksi > 0 ? '#00C9A7' : totalTransaksi < 0 ? '#C34A36' : "#B0A8B9"}}>
@@ -223,7 +234,6 @@ const ProfitScreen = () => {
           </View>
         </View>
       </View>
-
     </SafeAreaView>
     </TouchableWithoutFeedback>
   )
