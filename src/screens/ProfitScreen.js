@@ -4,7 +4,7 @@ import {
 } from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {useSelector, useDispatch} from 'react-redux'
-import numeral from 'numeral'
+import BigNumber from 'bignumber.js'
 
 const ProfitScreen = () => {
   const [hargaBeli, setHargaBeli] = useState()
@@ -19,8 +19,9 @@ const ProfitScreen = () => {
   const [totalTransaksi, setTotalTransaksi] = useState()
   const [presentase, setPresentase] = useState()
 
-  // console.log(selectedBroker, isIntraDay)
-  const formatter = new Intl.NumberFormat('ja-JP', {
+  BigNumber.config({ROUNDING_MODE: BigNumber.ROUND_CEIL})
+
+  const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'IDR',
   })
@@ -77,20 +78,18 @@ const ProfitScreen = () => {
       )
     } else {
       const fee_beli = isIntraDay ? listBroker[selectedBroker].fee_beli_intra/100 + 1 : listBroker[selectedBroker].fee_beli/100 + 1
-      const total_beli = Math.ceil(hargaBeli * jmlLot * 100 * fee_beli)
+      let hb = new BigNumber(hargaBeli)
+      const total_beli = hb.multipliedBy(jmlLot).multipliedBy(fee_beli).multipliedBy(100).decimalPlaces(0)
       
       const fee_jual = isIntraDay ? 1 - listBroker[selectedBroker].fee_jual_intra/100 : 1 - listBroker[selectedBroker].fee_jual/100
-      const total_jual = Math.ceil(hargaJual * jmlLot * 100 * fee_jual)
+      let hj = new BigNumber(hargaJual)
+      const total_jual = hj.multipliedBy(jmlLot).multipliedBy(fee_jual).multipliedBy(100).decimalPlaces(0)
 
-      const total_transaksi = total_jual - total_beli;
-      const presentase_profit_loss = +((total_transaksi / total_beli * 100).toFixed(2))
-      console.log("harga belo",hargaBeli)
-      console.log("jumlah lot", jmlLot)
-      console.log('fee_beli', fee_beli)
-      console.log(total_beli)
+      const total_transaksi = total_jual.minus(total_beli).toFormat(0);
+      const presentase_profit_loss = total_jual.minus(total_beli).dividedBy(total_beli).multipliedBy(100).toFixed(2, 7)
 
-      setTotalBeli(total_beli)
-      setTotalJual(total_jual)
+      setTotalBeli(total_beli.toFormat(0))
+      setTotalJual(total_jual.toFormat(0))
       setTotalTransaksi(total_transaksi)
       setPresentase(presentase_profit_loss)
     }
@@ -201,10 +200,10 @@ const ProfitScreen = () => {
         }
       </View>
       <View style={styles.buttonGroup}>
-        <Pressable style={[styles.button, styles.buttonReset]} onPress={handleReset}>
+        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#ff595e"},styles.button]} onPress={handleReset}>
           <Text style={styles.textStyle}>Reset</Text>
         </Pressable>
-        <Pressable style={[styles.button, styles.buttonHitung]} onPress={handleHitung}>
+        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#4DC7A4"}, styles.button]} onPress={handleHitung}>
           <Text style={styles.textStyle}>Hitung</Text>
         </Pressable>
       </View>
@@ -219,18 +218,23 @@ const ProfitScreen = () => {
         </View>
         <View style={{flexDirection:'row'}}>
           <View style={styles.netValue}>
-            <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{isNaN(totalBeli) === false ? `Rp ${formatter.format(totalBeli)}` : ''}</Text>
+            <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{!!totalBeli ? `Rp ${totalBeli}` : ''}</Text>
           </View>
           <View style={styles.netValue}>
-            <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{isNaN(totalJual) === false ? `Rp ${totalJual}` : ''}</Text>
+            <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{!!totalJual ? `Rp ${totalJual}` : ''}</Text>
           </View>
         </View>
-        <View style={{backgroundColor: totalTransaksi > 0 ? '#00C9A7' : totalTransaksi < 0 ? '#C34A36' : "#B0A8B9"}}>
-          <Text style={styles.textStyle}>Profit/Loss/Netral</Text>
+        <View style={{backgroundColor: presentase > 0 ? '#00C9A7' : presentase < 0 ? '#C34A36' : "#B0A8B9"}}>
+          <Text style={styles.textStyle}>
+            {presentase > 0 ? 
+              "Profit" : presentase < 0 ?
+              "Loss" : "Profit/Loss/Netral"
+            }
+          </Text>
         </View>
         <View style={{flexDirection:'row'}}>
           <View style={styles.netValue}>
-            <Text style={{ textAlign: "center", fontSize: 20}}>{isNaN(totalTransaksi) === false ? `Rp ${totalTransaksi}` : ''}</Text>
+            <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{!!totalTransaksi ? `Rp ${totalTransaksi} (${new BigNumber(presentase).toFormat(2)}%)` : ''}</Text>
           </View>
         </View>
       </View>
@@ -293,12 +297,6 @@ const styles = StyleSheet.create({
     alignItems:'center',
     marginTop: 3,
     width: 170,
-  },
-  buttonReset: {
-    backgroundColor: "#ff595e",
-  },
-  buttonHitung: {
-    backgroundColor: "#4DC7A4",
   },
   buttonGroup: {
     flexDirection: 'row',
