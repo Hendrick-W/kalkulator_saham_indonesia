@@ -19,7 +19,7 @@ const HomeScreen = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <Title title={"Kalkulator Saham Indonesia"}/>
       <View style={styles.buttonContainer}>
-        <Button onPress={navigateToProfitScreen} title={"Profit Transaksi"} backgroundColor="#8ac926"/>
+        <Button onPress={navigateToProfitScreen} title={"Profit/Loss Transaksi"} backgroundColor="#8ac926"/>
         <Button onPress={navigateToFeeTransaksi} title={"Fee Transaksi"} backgroundColor="#1982c4"/>
       </View>
       <View style={{position:'absolute', bottom:0, alignItems:'center'}}>

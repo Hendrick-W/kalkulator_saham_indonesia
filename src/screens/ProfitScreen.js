@@ -21,10 +21,6 @@ const ProfitScreen = () => {
 
   BigNumber.config({ROUNDING_MODE: BigNumber.ROUND_CEIL})
 
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'IDR',
-  })
   const handleHargaBeli = (value) => {
     if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
       setHargaBeli(
@@ -224,7 +220,7 @@ const ProfitScreen = () => {
             <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{!!totalJual ? `Rp ${totalJual}` : ''}</Text>
           </View>
         </View>
-        <View style={{backgroundColor: presentase > 0 ? '#00C9A7' : presentase < 0 ? '#C34A36' : "#B0A8B9"}}>
+        <View style={{backgroundColor: presentase > 0 ? '#00C9A7' : presentase < 0 ? '#C34A36' : "#B0A8B9", flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
           <Text style={styles.textStyle}>
             {presentase > 0 ? 
               "Profit" : presentase < 0 ?
@@ -330,7 +326,7 @@ const styles = StyleSheet.create({
   netValue: {
     flex: 1,
     borderWidth: 1,
-    height: 40
+    height: 40,
   },
   totalTransaksi: {
     flex: 1
