@@ -12,6 +12,8 @@ target 'kalkulator_saham_indonesia' do
     :hermes_enabled => false
   )
 
+  pod 'RNCPicker', :path => '../node_modules/@react-native-picker/picker'
+
   target 'kalkulator_saham_indonesiaTests' do
     inherit! :complete
     # Pods for testing

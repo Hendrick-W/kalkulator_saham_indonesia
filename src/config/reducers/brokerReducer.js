@@ -51,8 +51,8 @@ const initialState = {
     aplikasi: 'BIONS Mobile',
     fee_beli: 0.17,
     fee_jual: 0.27,
-    fee_beli_intra: 0.15,
-    fee_jual_intra:0.25
+    fee_beli_intra: 0.17,
+    fee_jual_intra:0.27
   },
   {
     index:5,

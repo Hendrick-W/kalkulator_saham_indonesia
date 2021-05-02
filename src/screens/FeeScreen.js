@@ -64,7 +64,7 @@ const FeeScreen = () => {
           keyExtractor={(item, index)=>index.toString()}
         />
       </View>
-      <View style={{ height:100, flexDirection:'row'}}>
+      <View style={{flexDirection:'row', marginTop: 10,}}>
         <ModalDefault/>
         <ModalBroker/>
       </View>
@@ -81,7 +81,9 @@ const styles = StyleSheet.create({
   listBroker:{
     borderWidth: 10, 
     height: "60%",
-    margin: 10,
+    marginTop: 10,
+    marginHorizontal: 10,
+    marginBottom: 0,
     borderRadius: 20,
     overflow:'hidden',
     padding: 5,
