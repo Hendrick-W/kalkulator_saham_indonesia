@@ -1,8 +1,17 @@
 import React, {useState} from 'react'
 import { StyleSheet, Text, View, Modal, Pressable, TextInput } from 'react-native'
+import { useDispatch} from 'react-redux'
+import {
+  defaultsBrokerDetail,
+} from '../config/actions'
 
 const ModalDefault = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch()
+
+  const defaultBrokerDetail = () => {
+    dispatch(defaultsBrokerDetail())
+  }
 
   return (
     <View style={styles.centeredView}>
@@ -26,7 +35,10 @@ const ModalDefault = () => {
               </Pressable>
               <Pressable
                 style={[styles.button, styles.buttonSave]}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() =>{ 
+                  defaultBrokerDetail()
+                  setModalVisible(!modalVisible)
+                }}
               >
                 <Text style={styles.textStyle}>Iya</Text>
               </Pressable>
@@ -49,8 +61,8 @@ export default ModalDefault
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent:'center',
+    alignItems:'center'
   },
   modalView: {
     margin: 20,

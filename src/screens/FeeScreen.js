@@ -10,25 +10,12 @@ import BrokerList from '../components/BrokerList'
 import ModalBroker from '../components/ModalBroker'
 import ModalDefault from '../components/ModalDefault'
 
-import {
-  addBrokerDetail, defaultsBrokerDetail,
-} from '../config/actions'
-
-
 const FeeScreen = () => {
   const [textInput, setTextInput] = useState("")
   const listBroker = useSelector(state=>state.broker.data)
   const [showList, setShowList] = useState(listBroker)
   const dispatch = useDispatch();
   
-  const addingBrokerDetail = () => {
-    console.log('Add teruslah')
-    //dispatch(addBrokerDetail({}))
-  }
-  const defaultBrokerDetail = () => {
-    console.log('Default broker')
-    dispatch(defaultsBrokerDetail())
-  }
   const onChangeText = useCallback( (value) => {
     setTextInput(value)
     if(value.length > 0){

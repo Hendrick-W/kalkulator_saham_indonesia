@@ -16,14 +16,61 @@ const ModalBroker = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Isilah beberapa bagian di bawah ini:</Text>
-            <View style={{width:"50%"}}>
-              <Text>Aplikasi:</Text>
-              <TextInput
-                style={{margin:10, borderWidth:1}}
-                placeholder="Nama Aplikasi"
-              />
+            <View style={{flexDirection:'row', justifyContent:"flex-start"}}>
+              <View style={styles.titleInput}>
+                <View>
+                  <Text>Aplikasi:</Text>
+                </View>
+                <View>
+                  <Text>Sekuritas:</Text>
+                </View>
+                <View>
+                  <Text>Fee Beli:</Text>
+                </View>
+                <View>
+                  <Text>Fee Jual:</Text>
+                </View>
+                <View>
+                  <Text>Fee Beli (intraday):</Text>
+                </View>
+                <View>
+                  <Text>Fee Jual (intraday):</Text>
+                </View>
+              </View>
+              <View style={styles.textInput}>
+                <View style={styles.styleInput}>
+                  <TextInput
+                    placeholder="Test"
+                  />
+                </View>
+                <View style={styles.styleInput}>
+                  <TextInput
+                    placeholder="Test"
+                  />
+                </View>
+                <View style={styles.styleInput}>
+                  <TextInput
+                    placeholder="Test"
+                  />
+                </View>
+                <View style={styles.styleInput}>
+                  <TextInput
+                    placeholder="Test"
+                  />
+                </View>
+                <View style={styles.styleInput}>
+                  <TextInput
+                    placeholder="Test"
+                  />
+                </View>
+                <View style={styles.styleInput}>
+                  <TextInput
+                    placeholder="Test"
+                  />
+                </View>
+              </View>
             </View>
-            <View style={{flexDirection:'row', justifyContent:'space-around', width: "70%"}}>
+            <View style={{flexDirection:'row', justifyContent:'space-around',}}>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}
@@ -55,15 +102,14 @@ export default ModalBroker
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent:'center',
+    alignItems:'center'
   },
   modalView: {
-    margin: 20,
+    margin: 10,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
+    padding: 25,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -100,5 +146,18 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize:18,
     textAlign: "center"
+  },
+  titleInput: {
+    justifyContent:'space-around',
+    alignItems:'flex-end'
+  },
+  textInput: {
+    justifyContent:'space-around',
+    width:'60%',
+  },
+  styleInput: {
+    borderWidth:1,
+    borderRadius:20,
+    margin: 5,
   }
 })
