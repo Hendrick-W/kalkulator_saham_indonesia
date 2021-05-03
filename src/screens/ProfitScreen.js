@@ -19,7 +19,7 @@ const ProfitScreen = () => {
   const [totalTransaksi, setTotalTransaksi] = useState()
   const [presentase, setPresentase] = useState()
 
-  BigNumber.config({ROUNDING_MODE: BigNumber.ROUND_CEIL})
+  BigNumber.config({ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN})
 
   const handleHargaBeli = (value) => {
     if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
@@ -78,7 +78,7 @@ const ProfitScreen = () => {
       const total_beli = hb.multipliedBy(jmlLot).multipliedBy(fee_beli).multipliedBy(100).decimalPlaces(0)
       
       const fee_jual = isIntraDay ? 1 - listBroker[selectedBroker].fee_jual_intra/100 : 1 - listBroker[selectedBroker].fee_jual/100
-      let hj = new BigNumber(hargaJual)
+      let hj = hargaJual == '.' ? new BigNumber(0) : new BigNumber(hargaJual)
       const total_jual = hj.multipliedBy(jmlLot).multipliedBy(fee_jual).multipliedBy(100).decimalPlaces(0)
 
       const total_transaksi = total_jual.minus(total_beli).toFormat(0);
@@ -230,7 +230,7 @@ const ProfitScreen = () => {
         </View>
         <View style={{flexDirection:'row'}}>
           <View style={styles.netValue}>
-            <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{!!totalTransaksi ? `Rp ${totalTransaksi} (${new BigNumber(presentase).toFormat(2)}%)` : ''}</Text>
+            <Text style={{ textAlign: "center", fontSize: 20}} selectable adjustsFontSizeToFit>{!!totalTransaksi ? `Rp ${totalTransaksi} (${new BigNumber(presentase).toFormat(2)}%)` : ''}</Text>
           </View>
         </View>
       </View>

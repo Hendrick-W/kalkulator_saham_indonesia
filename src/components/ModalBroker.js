@@ -2,7 +2,14 @@ import React, {useState} from 'react'
 import { StyleSheet, Text, View, Modal, Pressable, TextInput } from 'react-native'
 
 const ModalBroker = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(true);
+  const [aplikasi, setAplikasi] = useState('');
+  const [sekuritas, setSekuritas] = useState('');
+  const [feeBeli, setFeeBeli] = useState('');
+  const [feeJual, setFeeJual] = useState('');
+  const [feeBeliIntra, setFeeBeliIntra] = useState('');
+  const [feeJualIntra, setFeeJualIntra] = useState('');
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -19,53 +26,59 @@ const ModalBroker = () => {
             <View style={{flexDirection:'row', justifyContent:"flex-start"}}>
               <View style={styles.titleInput}>
                 <View>
-                  <Text>Aplikasi:</Text>
+                  <Text style={styles.textTitle}>Aplikasi*:</Text>
                 </View>
                 <View>
-                  <Text>Sekuritas:</Text>
+                  <Text style={styles.textTitle}>Sekuritas:</Text>
                 </View>
                 <View>
-                  <Text>Fee Beli:</Text>
+                  <Text style={styles.textTitle}>Fee Beli(%)*:</Text>
                 </View>
                 <View>
-                  <Text>Fee Jual:</Text>
+                  <Text style={styles.textTitle}>Fee Jual(%)*:</Text>
                 </View>
                 <View>
-                  <Text>Fee Beli (intraday):</Text>
+                  <Text style={styles.textTitle}>Fee Beli (intraday) (%):</Text>
                 </View>
                 <View>
-                  <Text>Fee Jual (intraday):</Text>
+                  <Text style={styles.textTitle}>Fee Jual (intraday)(%):</Text>
                 </View>
               </View>
               <View style={styles.textInput}>
-                <View style={styles.styleInput}>
+                <View style={styles.textInputContainer}>
                   <TextInput
-                    placeholder="Test"
+                    placeholder="Stockbit, POEMS, BIONS, dll..."
+                    value={aplikasi}
                   />
                 </View>
-                <View style={styles.styleInput}>
+                <View style={styles.textInputContainer}>
                   <TextInput
-                    placeholder="Test"
+                    placeholder="Sinarmas, BNI Sekuritas, dll..."
+                    value={sekuritas}
                   />
                 </View>
-                <View style={styles.styleInput}>
+                <View style={styles.textInputContainer}>
                   <TextInput
-                    placeholder="Test"
+                    placeholder="0.01, 0.015, 0.017, dll..."
+                    value={feeBeli}
                   />
                 </View>
-                <View style={styles.styleInput}>
+                <View style={styles.textInputContainer}>
                   <TextInput
-                    placeholder="Test"
+                    placeholder="0.02, 0.025, 0.027, dll..."
+                    value={feeJual}
                   />
                 </View>
-                <View style={styles.styleInput}>
+                <View style={styles.textInputContainer}>
                   <TextInput
-                    placeholder="Test"
+                    placeholder="0.01, 0.015, (opsional)"
+                    value={feeBeliIntra}
                   />
                 </View>
-                <View style={styles.styleInput}>
+                <View style={styles.textInputContainer}>
                   <TextInput
-                    placeholder="Test"
+                    placeholder="0.02, 0.025, (opsional)"
+                    value={feeJualIntra}
                   />
                 </View>
               </View>
@@ -83,6 +96,9 @@ const ModalBroker = () => {
               >
                 <Text style={styles.textStyle}>Simpan</Text>
               </Pressable>
+            </View>
+            <View>
+              <Text style={{color:"red", fontSize: 18}}>Ket *: wajib diisi</Text>
             </View>
           </View>
         </View>
@@ -107,9 +123,10 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 10,
-    backgroundColor: "white",
+    backgroundColor: "#EBE1D7",
     borderRadius: 20,
-    padding: 25,
+    paddingVertical: 25,
+    paddingHorizontal: 5,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -145,7 +162,8 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     fontSize:18,
-    textAlign: "center"
+    textAlign: "center",
+    fontWeight:'bold',
   },
   titleInput: {
     justifyContent:'space-around',
@@ -155,9 +173,13 @@ const styles = StyleSheet.create({
     justifyContent:'space-around',
     width:'60%',
   },
-  styleInput: {
-    borderWidth:1,
-    borderRadius:20,
+  textInputContainer: {
+    borderRadius: 10,
+    borderWidth: 1,
     margin: 5,
+    backgroundColor:"#fff"
+  },
+  textTitle: {
+    fontSize: 16
   }
 })
