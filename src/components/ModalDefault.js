@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
 import { StyleSheet, Text, View, Modal, Pressable, TextInput } from 'react-native'
-import { useDispatch} from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   defaultsBrokerDetail,
 } from '../config/actions'
 
-const ModalDefault = () => {
+const ModalDefault = ({ handleShowList }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const listBroker = useSelector(state=>state.broker.data);
 
   const defaultBrokerDetail = () => {
     dispatch(defaultsBrokerDetail())
@@ -37,6 +38,7 @@ const ModalDefault = () => {
                 style={[styles.button, styles.buttonSave]}
                 onPress={() =>{ 
                   defaultBrokerDetail()
+                  handleShowList(listBroker)
                   setModalVisible(!modalVisible)
                 }}
               >

@@ -3,9 +3,17 @@ import {
 } from '../constants'
 
 export function addBrokerDetail(params) {
+  const {aplikasi, sekuritas, feeBeli, feeJual, feeBeliIntra, feeJualIntra} = params
+  let aplikasiValue = aplikasi
+  let sekuritasValue = sekuritas.trim()
+  let feeBeliValue = feeBeli === '.' ? 0 : parseFloat(feeBeli)
+  let feeJualValue = feeJual ==='.' ? 0 : parseFloat(feeJual)
+  let feeBeliIntraValue = feeBeliIntra === '' || feeBeliIntra ==='.' ? 0 : parseFloat(feeBeliIntra)
+  let feeJualIntraValue = feeJualIntra === '' || feeJualIntra ==='.' ? 0 : parseFloat(feeJualIntra)
+
   return {
     type:ADDING_BROKER_DETAIL,
-    payload:params
+    payload:{aplikasiValue, sekuritasValue, feeBeliValue, feeJualValue, feeBeliIntraValue, feeJualIntraValue}
   }
 }
 

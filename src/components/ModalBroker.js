@@ -1,14 +1,82 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, Modal, Pressable, TextInput } from 'react-native'
+import { 
+  StyleSheet, Text, View, Modal, Pressable, TextInput, Alert 
+} from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { addBrokerDetail } from '../config/actions'
+import { isEmptyString } from '../utils/helper'
 
-const ModalBroker = () => {
-  const [modalVisible, setModalVisible] = useState(true);
+const ModalBroker = ({ handleShowList }) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const [aplikasi, setAplikasi] = useState('');
   const [sekuritas, setSekuritas] = useState('');
   const [feeBeli, setFeeBeli] = useState('');
   const [feeJual, setFeeJual] = useState('');
   const [feeBeliIntra, setFeeBeliIntra] = useState('');
   const [feeJualIntra, setFeeJualIntra] = useState('');
+  const listBroker = useSelector(state=>state.broker.data);
+
+  const dispatch = useDispatch();
+
+  const handleInputAplikasi = (value) => {
+    setAplikasi(value)
+  }
+  const handleInputSekuritas = (value) => {
+    setSekuritas(value)
+  }
+  const handleFeeBeli = (value) => {
+    if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
+      setFeeBeli(
+        value.replace(/[^0-9\.]/g, '')
+      )
+    } else {
+      if(value.match(/(?:^| )\d+(\.\d+)?(?=$| )|(?:^| )\.\d+(?=$| )/gm) || value === '') setFeeBeli(value)
+    }
+  }
+  const handleFeeJual = (value) => {
+    if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
+      setFeeJual(
+        value.replace(/[^0-9\.]/g, '')
+      )
+    } else {
+      if(value.match(/(?:^| )\d+(\.\d+)?(?=$| )|(?:^| )\.\d+(?=$| )/gm) || value === '') setFeeJual(value)
+    }
+  }
+  const handleFeeBeliIntra = (value) => {
+    if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
+      setFeeBeliIntra(
+        value.replace(/[^0-9\.]/g, '')
+      )
+    } else {
+      if(value.match(/(?:^| )\d+(\.\d+)?(?=$| )|(?:^| )\.\d+(?=$| )/gm) || value === '') setFeeBeliIntra(value)
+    }
+  }
+  const handleFeeJualIntra = (value) => {
+    if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
+      setFeeJualIntra(
+        value.replace(/[^0-9\.]/g, '')
+      )
+    } else {
+      if(value.match(/(?:^| )\d+(\.\d+)?(?=$| )|(?:^| )\.\d+(?=$| )/gm) || value === '') setFeeJualIntra(value)
+    }
+  }
+  const handleSimpan = () => {
+    if(isEmptyString(aplikasi) || isEmptyString(feeBeli) || isEmptyString(feeJual)){
+      Alert.alert(
+        "Pesan",
+        "Pastikan Aplikasi, Fee Beli(%), dan Fee Jual(%) telah terisi",
+        [
+          {
+            text : "Ok",
+            style: "cancel"
+          }
+        ]
+      )
+    } else {
+      dispatch(addBrokerDetail({aplikasi, sekuritas, feeBeli, feeJual, feeBeliIntra, feeJualIntra}))
+      handleShowList(listBroker);
+    }
+  }
 
   return (
     <View style={styles.centeredView}>
@@ -49,36 +117,46 @@ const ModalBroker = () => {
                   <TextInput
                     placeholder="Stockbit, POEMS, BIONS, dll..."
                     value={aplikasi}
+                    onChangeText={handleInputAplikasi}
                   />
                 </View>
                 <View style={styles.textInputContainer}>
                   <TextInput
                     placeholder="Sinarmas, BNI Sekuritas, dll..."
                     value={sekuritas}
+                    onChangeText={handleInputSekuritas}
                   />
                 </View>
                 <View style={styles.textInputContainer}>
                   <TextInput
                     placeholder="0.01, 0.015, 0.017, dll..."
                     value={feeBeli}
+                    keyboardType='numeric'
+                    onChangeText={handleFeeBeli}
                   />
                 </View>
                 <View style={styles.textInputContainer}>
                   <TextInput
                     placeholder="0.02, 0.025, 0.027, dll..."
                     value={feeJual}
+                    keyboardType='numeric'
+                    onChangeText={handleFeeJual}
                   />
                 </View>
                 <View style={styles.textInputContainer}>
                   <TextInput
                     placeholder="0.01, 0.015, (opsional)"
                     value={feeBeliIntra}
+                    keyboardType='numeric'
+                    onChangeText={handleFeeBeliIntra}
                   />
                 </View>
                 <View style={styles.textInputContainer}>
                   <TextInput
                     placeholder="0.02, 0.025, (opsional)"
                     value={feeJualIntra}
+                    keyboardType='numeric'
+                    onChangeText={handleFeeJualIntra}
                   />
                 </View>
               </View>
@@ -92,7 +170,10 @@ const ModalBroker = () => {
               </Pressable>
               <Pressable
                 style={[styles.button, styles.buttonSave]}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() => {
+                  handleSimpan()
+                  // setModalVisible(!modalVisible)
+                }}
               >
                 <Text style={styles.textStyle}>Simpan</Text>
               </Pressable>

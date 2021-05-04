@@ -59,7 +59,7 @@ const BrokerList = ({
               <Text style={styles.textNumFee}>{fee_beli_intra}%</Text>
             </View>
             <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
-              <Text style={styles.textNumFee}>{fee_beli_intra}%</Text>
+              <Text style={styles.textNumFee}>{fee_jual_intra}%</Text>
             </View>
           </View>
         </View>

@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import { 
   StyleSheet, Text, View, SafeAreaView, FlatList
 } from 'react-native'
@@ -16,17 +16,22 @@ const FeeScreen = () => {
   const [showList, setShowList] = useState(listBroker)
   const dispatch = useDispatch();
   
-  const onChangeText = useCallback( (value) => {
+  const handleShowList = (value) => {
+    setShowList(value)
+  }
+
+  const onChangeText = useCallback((value) => {
     setTextInput(value)
     if(value.length > 0){
       setShowList(listBroker.filter(item => {
-        return item.sekuritas.toLowerCase().includes(value.toLowerCase()) || item.kode_broker.toLowerCase().includes(value.toLowerCase()) || item.aplikasi.toLowerCase().includes(value.toLowerCase())
+        return item.sekuritas.toLowerCase().includes(value.toLowerCase()) || item.aplikasi.toLowerCase().includes(value.toLowerCase())
       }))
     } else {
       setShowList(listBroker)
     }
   }, [])
-  console.log(listBroker)
+  console.log("list btokr", listBroker)
+  console.log("show list", showList)
   return (
     <SafeAreaView style={styles.container}>
       <View style={{margin:20}}>
@@ -35,7 +40,7 @@ const FeeScreen = () => {
       </View>
       <View style={styles.listBroker}>
         <FlatList
-          data={showList}
+          data={listBroker}
           renderItem={({item, index}) => {
             return <BrokerList
               index = {item.index}
@@ -52,8 +57,8 @@ const FeeScreen = () => {
         />
       </View>
       <View style={{flexDirection:'row', marginTop: 10,}}>
-        <ModalDefault/>
-        <ModalBroker/>
+        <ModalDefault handleShowList={handleShowList}/>
+        <ModalBroker handleShowList={handleShowList}/>
       </View>
     </SafeAreaView>
   )
