@@ -1,17 +1,15 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, Modal, Pressable, TextInput } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { StyleSheet, Text, View, Modal, Pressable } from 'react-native'
+import { useDispatch } from 'react-redux'
 import {
-  defaultsBrokerDetail,
+  deleteBroker,
 } from '../config/actions'
 
-const ModalDefault = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+const ModalDeleteBroker = ({visible, index, handleModalDeleteVisible}) => {
   const dispatch = useDispatch();
-  const listBroker = useSelector(state=>state.broker.data);
 
-  const defaultBrokerDetail = () => {
-    dispatch(defaultsBrokerDetail())
+  const handleDelete = (index) => {
+    dispatch(deleteBroker(index))
   }
 
   return (
@@ -19,26 +17,28 @@ const ModalDefault = () => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={visible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          handleModalDeleteVisible();
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Anda yakin ingin list broker Anda kembali menjadi list broker dari developer (yang hanya ada 6)?</Text>
+            <Text style={styles.modalText}>Anda yakin ingin menghilangkan data ini?</Text>
             <View style={{flexDirection:'row', justifyContent:'space-around', width: "70%"}}>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() =>
+                  handleModalDeleteVisible()
+                }
               >
                 <Text style={styles.textStyle}>Tidak</Text>
               </Pressable>
               <Pressable
-                style={[styles.button, styles.buttonSave]}
+                style={[styles.button, styles.buttonDelete]}
                 onPress={() =>{ 
-                  defaultBrokerDetail()
-                  setModalVisible(!modalVisible)
+                  handleDelete(index)
+                  handleModalDeleteVisible()
                 }}
               >
                 <Text style={styles.textStyle}>Iya</Text>
@@ -47,17 +47,11 @@ const ModalDefault = () => {
           </View>
         </View>
       </Modal>
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Reset</Text>
-      </Pressable>
     </View>
   )
 }
 
-export default ModalDefault
+export default ModalDeleteBroker
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -96,7 +90,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#8c2020",
     width:70,
   },
-  buttonSave: {
+  buttonDelete: {
     backgroundColor:"#2196F3",
     width:70,
   },

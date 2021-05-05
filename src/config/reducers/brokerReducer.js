@@ -1,5 +1,5 @@
 import {
-  ADDING_BROKER_DETAIL, DEFAULT_BROKER_DETAIL
+  ADDING_BROKER_DETAIL, DEFAULT_BROKER_DETAIL, DELETE_BROKER
 } from '../constants'
 
 const initialState = {
@@ -66,7 +66,7 @@ const brokerReducer = (state = initialState, action) => {
       const {aplikasiValue, sekuritasValue, feeBeliValue, feeJualValue, feeBeliIntraValue, feeJualIntraValue} = action.payload
       const data = [...state.data]
       data.push({
-        index: state.data.length,
+        index: state.data[state.data.length - 1].index + 1,
         sekuritas: sekuritasValue,
         aplikasi: aplikasiValue,
         fee_beli: feeBeliValue,
@@ -81,6 +81,12 @@ const brokerReducer = (state = initialState, action) => {
     case DEFAULT_BROKER_DETAIL:
       return {
         ...initialState,
+      }
+    case DELETE_BROKER:
+      let dataFiltered = state.data.filter(item => item.index !== action.payload);
+      return {
+        ...state,
+        data: dataFiltered
       }
     default:
       return state;

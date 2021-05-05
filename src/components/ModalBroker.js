@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
 import { 
-  StyleSheet, Text, View, Modal, Pressable, TextInput, Alert 
+  StyleSheet, Text, View, Modal, Pressable, TextInput, Alert, TouchableWithoutFeedback, Keyboard 
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { addBrokerDetail } from '../config/actions'
 import { isEmptyString } from '../utils/helper'
 
-const ModalBroker = ({ handleShowList }) => {
+const ModalBroker = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [aplikasi, setAplikasi] = useState('');
   const [sekuritas, setSekuritas] = useState('');
@@ -14,7 +14,6 @@ const ModalBroker = ({ handleShowList }) => {
   const [feeJual, setFeeJual] = useState('');
   const [feeBeliIntra, setFeeBeliIntra] = useState('');
   const [feeJualIntra, setFeeJualIntra] = useState('');
-  const listBroker = useSelector(state=>state.broker.data);
 
   const dispatch = useDispatch();
 
@@ -74,11 +73,22 @@ const ModalBroker = ({ handleShowList }) => {
       )
     } else {
       dispatch(addBrokerDetail({aplikasi, sekuritas, feeBeli, feeJual, feeBeliIntra, feeJualIntra}))
-      handleShowList(listBroker);
+      handleResetModal()
+      setModalVisible(!modalVisible)
     }
   }
 
+  const handleResetModal = () => {
+    setAplikasi('');
+    setSekuritas('');
+    setFeeBeli('');
+    setFeeJual('');
+    setFeeBeliIntra('');
+    setFeeJualIntra('');
+  }
+
   return (
+    <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
     <View style={styles.centeredView}>
       <Modal
         animationType="slide"
@@ -163,16 +173,15 @@ const ModalBroker = ({ handleShowList }) => {
             </View>
             <View style={{flexDirection:'row', justifyContent:'space-around',}}>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button]}
                 onPress={() => setModalVisible(!modalVisible)}
               >
                 <Text style={styles.textStyle}>Kembali</Text>
               </Pressable>
               <Pressable
-                style={[styles.button, styles.buttonSave]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#2196F3"},styles.button]}
                 onPress={() => {
                   handleSimpan()
-                  // setModalVisible(!modalVisible)
                 }}
               >
                 <Text style={styles.textStyle}>Simpan</Text>
@@ -185,12 +194,13 @@ const ModalBroker = ({ handleShowList }) => {
         </View>
       </Modal>
       <Pressable
-        style={[styles.button, styles.buttonOpen]}
+        style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#4DC7A4"},styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}
       >
         <Text style={styles.textStyle}>Tambah Broker/Sekuritas</Text>
       </Pressable>
     </View>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -226,14 +236,7 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   buttonOpen: {
-    backgroundColor: "#4DC7A4",
     width: 180,
-  },
-  buttonClose: {
-    backgroundColor: "#8c2020",
-  },
-  buttonSave: {
-    backgroundColor:"#2196F3"
   },
   textStyle: {
     color: "white",

@@ -1,5 +1,5 @@
 import {
-  ADDING_BROKER_DETAIL, DEFAULT_BROKER_DETAIL
+  ADDING_BROKER_DETAIL, DEFAULT_BROKER_DETAIL, DELETE_BROKER
 } from '../constants'
 
 export function addBrokerDetail(params) {
@@ -20,5 +20,12 @@ export function addBrokerDetail(params) {
 export function defaultsBrokerDetail(){
   return {
     type:DEFAULT_BROKER_DETAIL,
+  }
+}
+
+export function deleteBroker(params) {
+  return {
+    type:DELETE_BROKER,
+    payload:params,
   }
 }

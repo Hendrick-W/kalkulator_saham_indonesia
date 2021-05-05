@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import { 
-  StyleSheet, Text, View, SafeAreaView, FlatList
+  StyleSheet, Text, View, SafeAreaView, FlatList,
 } from 'react-native'
 import {useSelector, useDispatch} from 'react-redux'
 
@@ -9,29 +9,31 @@ import Button from '../components/Button'
 import BrokerList from '../components/BrokerList'
 import ModalBroker from '../components/ModalBroker'
 import ModalDefault from '../components/ModalDefault'
+import ModalDeleteBroker from '../components/ModalDeleteBroker'
+
+import {isEmptyString} from '../utils/helper'
 
 const FeeScreen = () => {
   const [textInput, setTextInput] = useState("")
   const listBroker = useSelector(state=>state.broker.data)
-  const [showList, setShowList] = useState(listBroker)
+  const [modalDeleteVisible, setModalDeleteVisible] = useState(false)
+  const [indexBroker, setIndexBroker] = useState(0)
   const dispatch = useDispatch();
-  
-  const handleShowList = (value) => {
-    setShowList(value)
-  }
 
   const onChangeText = useCallback((value) => {
     setTextInput(value)
-    if(value.length > 0){
-      setShowList(listBroker.filter(item => {
-        return item.sekuritas.toLowerCase().includes(value.toLowerCase()) || item.aplikasi.toLowerCase().includes(value.toLowerCase())
-      }))
-    } else {
-      setShowList(listBroker)
-    }
   }, [])
+
+  const handleModalDeleteVisible = useCallback(() => {
+    setModalDeleteVisible(!modalDeleteVisible)
+  }, [modalDeleteVisible])
+
+  const handleIndexBroker = useCallback((value) => {
+    console.log(indexBroker)
+    setIndexBroker(value)
+  },[modalDeleteVisible])
+
   console.log("list btokr", listBroker)
-  console.log("show list", showList)
   return (
     <SafeAreaView style={styles.container}>
       <View style={{margin:20}}>
@@ -39,8 +41,11 @@ const FeeScreen = () => {
         <SearchBar onChangeText={onChangeText} value={textInput}/>
       </View>
       <View style={styles.listBroker}>
+        <Text style={{textAlign:'center'}}>Total sekuritas/broker: {listBroker.length}</Text>
         <FlatList
-          data={listBroker}
+          data={isEmptyString(textInput) ? listBroker : listBroker.filter(item => {
+            return item.sekuritas.toLowerCase().includes(textInput.toLowerCase()) || item.aplikasi.toLowerCase().includes(textInput.toLowerCase())
+          })}
           renderItem={({item, index}) => {
             return <BrokerList
               index = {item.index}
@@ -51,15 +56,18 @@ const FeeScreen = () => {
               fee_jual = {item.fee_jual}
               fee_beli_intra = {item.fee_beli_intra}
               fee_jual_intra = {item.fee_jual_intra}
+              handleModalDeleteVisible = {handleModalDeleteVisible}
+              handleIndexBroker = {handleIndexBroker}
             />
           }}
           keyExtractor={(item, index)=>index.toString()}
         />
       </View>
       <View style={{flexDirection:'row', marginTop: 10,}}>
-        <ModalDefault handleShowList={handleShowList}/>
-        <ModalBroker handleShowList={handleShowList}/>
+        <ModalDefault/>
+        <ModalBroker/>
       </View>
+      <ModalDeleteBroker visible={modalDeleteVisible} handleModalDeleteVisible={handleModalDeleteVisible} index={indexBroker}/>
     </SafeAreaView>
   )
 }
