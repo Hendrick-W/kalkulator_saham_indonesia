@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const BrokerList = ({
-  index, sekuritas, aplikasi, fee_beli, fee_jual, fee_beli_intra, fee_jual_intra, handleModalDeleteVisible, handleIndexBroker, }) => {
+  index, sekuritas, aplikasi, fee_beli, fee_jual, fee_beli_intra, fee_jual_intra, handleModalDeleteVisible, handleModalEditVisible, handleIndexBroker}) => {
   return (
     <View style={styles.container}>
       <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:10}}>
@@ -13,7 +13,12 @@ const BrokerList = ({
         }
       </Text>
         <View style={{flexDirection:'row', alignContent:'center'}}>
-          <TouchableOpacity style={styles.edit}>
+          <TouchableOpacity style={styles.edit}
+            onPress={()=>{
+              handleModalEditVisible()
+              handleIndexBroker(index)
+            }}
+          >
             <Icon name="edit" color="#818385" size={30}/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.delete}

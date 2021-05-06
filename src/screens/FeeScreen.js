@@ -5,11 +5,11 @@ import {
 import {useSelector, useDispatch} from 'react-redux'
 
 import SearchBar from '../components/SearchBar'
-import Button from '../components/Button'
 import BrokerList from '../components/BrokerList'
 import ModalBroker from '../components/ModalBroker'
 import ModalDefault from '../components/ModalDefault'
 import ModalDeleteBroker from '../components/ModalDeleteBroker'
+import ModalEditBroker from '../components/ModalEditBroker'
 
 import {isEmptyString} from '../utils/helper'
 
@@ -17,8 +17,10 @@ const FeeScreen = () => {
   const [textInput, setTextInput] = useState("")
   const listBroker = useSelector(state=>state.broker.data)
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false)
+  const [modalEditVisible, setModalEditVisible] = useState(false)
+  const [indexDeleteBroker, setIndexDeleteBroker] = useState(0)
+  const [indexEditBroker, setIndexEditBroker] = useState(0)
   const [indexBroker, setIndexBroker] = useState(0)
-  const dispatch = useDispatch();
 
   const onChangeText = useCallback((value) => {
     setTextInput(value)
@@ -28,10 +30,13 @@ const FeeScreen = () => {
     setModalDeleteVisible(!modalDeleteVisible)
   }, [modalDeleteVisible])
 
+  const handleModalEditVisible = useCallback(()=> {
+    setModalEditVisible(!modalEditVisible)
+  }, [modalEditVisible])
+
   const handleIndexBroker = useCallback((value) => {
-    console.log(indexBroker)
     setIndexBroker(value)
-  },[modalDeleteVisible])
+  }, [modalEditVisible, modalDeleteVisible])
 
   console.log("list btokr", listBroker)
   return (
@@ -57,6 +62,7 @@ const FeeScreen = () => {
               fee_beli_intra = {item.fee_beli_intra}
               fee_jual_intra = {item.fee_jual_intra}
               handleModalDeleteVisible = {handleModalDeleteVisible}
+              handleModalEditVisible = {handleModalEditVisible}
               handleIndexBroker = {handleIndexBroker}
             />
           }}
@@ -68,6 +74,7 @@ const FeeScreen = () => {
         <ModalBroker/>
       </View>
       <ModalDeleteBroker visible={modalDeleteVisible} handleModalDeleteVisible={handleModalDeleteVisible} index={indexBroker}/>
+      <ModalEditBroker visible={modalEditVisible} handleModalEditVisible={handleModalEditVisible} index={indexBroker}/>
     </SafeAreaView>
   )
 }
