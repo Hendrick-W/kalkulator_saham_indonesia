@@ -37,8 +37,7 @@ const FeeScreen = () => {
   const handleIndexBroker = useCallback((value) => {
     setIndexBroker(value)
   }, [modalEditVisible, modalDeleteVisible])
-
-  console.log("list btokr", listBroker)
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={{margin:20}}>

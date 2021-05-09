@@ -98,8 +98,6 @@ const ProfitScreen = () => {
     }
 
   }
-  console.log(listBroker)
-  console.log("debug", selectedIndex, selectedBroker)
   
   return (
     <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
