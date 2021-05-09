@@ -1,45 +1,44 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import { 
-  StyleSheet, Text, View, SafeAreaView, FlatList
+  StyleSheet, Text, View, SafeAreaView, FlatList,
 } from 'react-native'
 import {useSelector, useDispatch} from 'react-redux'
 
 import SearchBar from '../components/SearchBar'
-import Button from '../components/Button'
 import BrokerList from '../components/BrokerList'
 import ModalBroker from '../components/ModalBroker'
 import ModalDefault from '../components/ModalDefault'
+import ModalDeleteBroker from '../components/ModalDeleteBroker'
+import ModalEditBroker from '../components/ModalEditBroker'
 
-import {
-  addBrokerDetail, defaultsBrokerDetail,
-} from '../config/actions'
-
+import {isEmptyString} from '../utils/helper'
 
 const FeeScreen = () => {
   const [textInput, setTextInput] = useState("")
   const listBroker = useSelector(state=>state.broker.data)
-  const [showList, setShowList] = useState(listBroker)
-  const dispatch = useDispatch();
-  
-  const addingBrokerDetail = () => {
-    console.log('Add teruslah')
-    //dispatch(addBrokerDetail({}))
-  }
-  const defaultBrokerDetail = () => {
-    console.log('Default broker')
-    dispatch(defaultsBrokerDetail())
-  }
-  const onChangeText = useCallback( (value) => {
+  const [modalDeleteVisible, setModalDeleteVisible] = useState(false)
+  const [modalEditVisible, setModalEditVisible] = useState(false)
+  const [indexDeleteBroker, setIndexDeleteBroker] = useState(0)
+  const [indexEditBroker, setIndexEditBroker] = useState(0)
+  const [indexBroker, setIndexBroker] = useState(0)
+
+  const onChangeText = useCallback((value) => {
     setTextInput(value)
-    if(value.length > 0){
-      setShowList(listBroker.filter(item => {
-        return item.sekuritas.toLowerCase().includes(value.toLowerCase()) || item.kode_broker.toLowerCase().includes(value.toLowerCase()) || item.aplikasi.toLowerCase().includes(value.toLowerCase())
-      }))
-    } else {
-      setShowList(listBroker)
-    }
   }, [])
-  console.log(listBroker)
+
+  const handleModalDeleteVisible = useCallback(() => {
+    setModalDeleteVisible(!modalDeleteVisible)
+  }, [modalDeleteVisible])
+
+  const handleModalEditVisible = useCallback(()=> {
+    setModalEditVisible(!modalEditVisible)
+  }, [modalEditVisible])
+
+  const handleIndexBroker = useCallback((value) => {
+    setIndexBroker(value)
+  }, [modalEditVisible, modalDeleteVisible])
+
+  console.log("list btokr", listBroker)
   return (
     <SafeAreaView style={styles.container}>
       <View style={{margin:20}}>
@@ -47,8 +46,11 @@ const FeeScreen = () => {
         <SearchBar onChangeText={onChangeText} value={textInput}/>
       </View>
       <View style={styles.listBroker}>
+        <Text style={{textAlign:'center'}}>Total sekuritas/broker: {listBroker.length}</Text>
         <FlatList
-          data={showList}
+          data={isEmptyString(textInput) ? listBroker : listBroker.filter(item => {
+            return item.sekuritas.toLowerCase().includes(textInput.toLowerCase()) || item.aplikasi.toLowerCase().includes(textInput.toLowerCase())
+          })}
           renderItem={({item, index}) => {
             return <BrokerList
               index = {item.index}
@@ -59,6 +61,9 @@ const FeeScreen = () => {
               fee_jual = {item.fee_jual}
               fee_beli_intra = {item.fee_beli_intra}
               fee_jual_intra = {item.fee_jual_intra}
+              handleModalDeleteVisible = {handleModalDeleteVisible}
+              handleModalEditVisible = {handleModalEditVisible}
+              handleIndexBroker = {handleIndexBroker}
             />
           }}
           keyExtractor={(item, index)=>index.toString()}
@@ -68,6 +73,8 @@ const FeeScreen = () => {
         <ModalDefault/>
         <ModalBroker/>
       </View>
+      <ModalDeleteBroker visible={modalDeleteVisible} handleModalDeleteVisible={handleModalDeleteVisible} index={indexBroker}/>
+      <ModalEditBroker visible={modalEditVisible} handleModalEditVisible={handleModalEditVisible} index={indexBroker}/>
     </SafeAreaView>
   )
 }

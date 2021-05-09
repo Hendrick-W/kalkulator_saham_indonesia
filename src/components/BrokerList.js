@@ -1,11 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const BrokerList = ({
-  index, sekuritas, kode_broker, aplikasi, fee_beli, fee_jual, fee_beli_intra, fee_jual_intra,}) => {
+  index, sekuritas, aplikasi, fee_beli, fee_jual, fee_beli_intra, fee_jual_intra, handleModalDeleteVisible, handleModalEditVisible, handleIndexBroker}) => {
+  const window = useWindowDimensions();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {height: window.height * 0.2}]}>
       <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:10}}>
         <Text style={styles.broker}>{aplikasi} / {sekuritas.length < 15 ?
           `${sekuritas}`:
@@ -13,10 +14,20 @@ const BrokerList = ({
         }
       </Text>
         <View style={{flexDirection:'row', alignContent:'center'}}>
-          <TouchableOpacity style={styles.edit}>
+          <TouchableOpacity style={styles.edit}
+            onPress={()=>{
+              handleModalEditVisible()
+              handleIndexBroker(index)
+            }}
+          >
             <Icon name="edit" color="#818385" size={30}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.delete}>
+          <TouchableOpacity style={styles.delete}
+            onPress={() => {
+              handleModalDeleteVisible()
+              handleIndexBroker(index)
+            }}
+          >
             <Icon name="delete" color="#818385" size={30}/>
           </TouchableOpacity>
         </View>
@@ -59,7 +70,7 @@ const BrokerList = ({
               <Text style={styles.textNumFee}>{fee_beli_intra}%</Text>
             </View>
             <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
-              <Text style={styles.textNumFee}>{fee_beli_intra}%</Text>
+              <Text style={styles.textNumFee}>{fee_jual_intra}%</Text>
             </View>
           </View>
         </View>

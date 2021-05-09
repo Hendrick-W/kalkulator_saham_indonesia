@@ -1,17 +1,16 @@
 import React, {useState} from 'react'
 import { StyleSheet, Text, View, Modal, Pressable, useWindowDimensions } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import {
-  defaultsBrokerDetail,
+  deleteBroker,
 } from '../config/actions'
 
-const ModalDefault = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+const ModalDeleteBroker = ({visible, index, handleModalDeleteVisible}) => {
   const dispatch = useDispatch();
   const window = useWindowDimensions();
 
-  const defaultBrokerDetail = () => {
-    dispatch(defaultsBrokerDetail())
+  const handleDelete = (index) => {
+    dispatch(deleteBroker(index))
   }
 
   return (
@@ -19,26 +18,28 @@ const ModalDefault = () => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={visible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          handleModalDeleteVisible();
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Anda yakin ingin list broker Anda kembali menjadi list broker dari developer (yang hanya ada 6)?</Text>
-            <View style={{flexDirection:'row', justifyContent:'space-around', width: "70%"}}>
+            <Text style={styles.modalText}>Anda yakin ingin menghilangkan data ini?</Text>
+            <View style={{flexDirection:'row', justifyContent:'space-between', width: window.width * 0.5}}>
               <Pressable
                 style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button, {height: window.height * 0.07, width: window.width * 0.2}]}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() =>
+                  handleModalDeleteVisible()
+                }
               >
                 <Text style={styles.textStyle}>Tidak</Text>
               </Pressable>
               <Pressable
                 style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#2196F3"},styles.button, {height: window.height * 0.07, width: window.width * 0.2}]}
                 onPress={() =>{ 
-                  defaultBrokerDetail()
-                  setModalVisible(!modalVisible)
+                  handleDelete(index)
+                  handleModalDeleteVisible()
                 }}
               >
                 <Text style={styles.textStyle}>Iya</Text>
@@ -47,17 +48,11 @@ const ModalDefault = () => {
           </View>
         </View>
       </Modal>
-      <Pressable
-        style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button, {height: window.height * 0.065, width: window.width * 0.45}]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Reset</Text>
-      </Pressable>
     </View>
   )
 }
 
-export default ModalDefault
+export default ModalDeleteBroker
 
 const styles = StyleSheet.create({
   centeredView: {

@@ -1,5 +1,5 @@
 import {
-  ADDING_BROKER_DETAIL, DEFAULT_BROKER_DETAIL
+  ADDING_BROKER_DETAIL, DEFAULT_BROKER_DETAIL, DELETE_BROKER, EDIT_BROKER
 } from '../constants'
 
 const initialState = {
@@ -7,7 +7,6 @@ const initialState = {
   {
     index: 0,
     sekuritas: 'Indo Premier Sekuritas',
-    kode_broker:'PD',
     aplikasi: 'IPOT',
     fee_beli: 0.19,
     fee_jual: 0.29,
@@ -17,7 +16,6 @@ const initialState = {
   {
     index:1,
     sekuritas: 'Mirae Asset Sekuritas',
-    kode_broker:'YP',
     aplikasi: 'Neo HOTS',
     fee_beli: 0.15,
     fee_jual: 0.25,
@@ -27,7 +25,6 @@ const initialState = {
   {
     index:2,
     sekuritas: 'PT Mandiri Sekuritas',
-    kode_broker:'CC',
     aplikasi: 'MOST Mobile',
     fee_beli: 0.18,
     fee_jual: 0.28,
@@ -37,7 +34,6 @@ const initialState = {
   {
     index: 3,
     sekuritas: 'PT Phillip Sekuritas Indonesia',
-    kode_broker:'KK',
     aplikasi: 'POEMS ID',
     fee_beli: 0.18,
     fee_jual: 0.28,
@@ -47,7 +43,6 @@ const initialState = {
   {
     index:4,
     sekuritas: 'BNI Sekuritas',
-    kode_broker:'NI',
     aplikasi: 'BIONS Mobile',
     fee_beli: 0.17,
     fee_jual: 0.27,
@@ -57,7 +52,6 @@ const initialState = {
   {
     index:5,
     sekuritas: 'PT Sinarmas Sekuritas',
-    kode_broker:'DH',
     aplikasi: 'Stockbit',
     fee_beli: 0.15,
     fee_jual: 0.25,
@@ -69,14 +63,48 @@ const initialState = {
 const brokerReducer = (state = initialState, action) => {
   switch(action.type){
     case ADDING_BROKER_DETAIL:
+    {  const {aplikasiValue, sekuritasValue, feeBeliValue, feeJualValue, feeBeliIntraValue, feeJualIntraValue} = action.payload
+      const data = [...state.data]
+      data.push({
+        index: state.data[state.data.length - 1].index + 1,
+        sekuritas: sekuritasValue,
+        aplikasi: aplikasiValue,
+        fee_beli: feeBeliValue,
+        fee_jual: feeJualValue,
+        fee_beli_intra: feeBeliIntraValue,
+        fee_jual_intra:feeJualIntraValue,
+      })
       return{
         ...state,
-        data: [...state.data, action.payload]
+        data
       }
+    }
     case DEFAULT_BROKER_DETAIL:
       return {
         ...initialState,
       }
+    case DELETE_BROKER:
+      let dataFiltered = state.data.filter(item => item.index !== action.payload);
+      return {
+        ...state,
+        data: dataFiltered
+      }
+    case EDIT_BROKER:
+    {
+      const {aplikasiValue, sekuritasValue, feeBeliValue, feeJualValue, feeBeliIntraValue, feeJualIntraValue, index} = action.payload
+      const position = state.data.findIndex(data => data.index === index)
+      const data = [...state.data]
+      data[position].aplikasi = aplikasiValue
+      data[position].sekuritas = sekuritasValue
+      data[position].fee_beli = feeBeliValue
+      data[position].fee_jual = feeJualValue
+      data[position].fee_beli_intra = feeBeliIntraValue
+      data[position].fee_jual_intra = feeJualIntraValue
+      return {
+        ...state,
+        data
+      }
+    }
     default:
       return state;
   }

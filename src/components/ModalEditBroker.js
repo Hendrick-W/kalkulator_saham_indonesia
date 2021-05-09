@@ -1,21 +1,33 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { 
   StyleSheet, Text, View, Modal, Pressable, TextInput, Alert, TouchableWithoutFeedback, Keyboard, useWindowDimensions
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { addBrokerDetail } from '../config/actions'
+import { editBroker } from '../config/actions'
 import { isEmptyString } from '../utils/helper'
 
-const ModalBroker = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [aplikasi, setAplikasi] = useState('');
-  const [sekuritas, setSekuritas] = useState('');
-  const [feeBeli, setFeeBeli] = useState('');
-  const [feeJual, setFeeJual] = useState('');
-  const [feeBeliIntra, setFeeBeliIntra] = useState('');
-  const [feeJualIntra, setFeeJualIntra] = useState('');
+const ModalEditBroker = ({visible, index, handleModalEditVisible}) => {
+  const listBroker = useSelector(state=>state.broker.data)
+  const [aplikasi, setAplikasi] = useState();
+  const [sekuritas, setSekuritas] = useState();
+  const [feeBeli, setFeeBeli] = useState();
+  const [feeJual, setFeeJual] = useState();
+  const [feeBeliIntra, setFeeBeliIntra] = useState();
+  const [feeJualIntra, setFeeJualIntra] = useState();
   const window = useWindowDimensions();
 
+  useEffect(()=>{
+    if(visible){
+      const dataModal = listBroker.find(broker => broker.index === index)
+      setAplikasi(dataModal.aplikasi);
+      setSekuritas(dataModal.sekuritas);
+      setFeeBeli(String(dataModal.fee_beli));
+      setFeeJual(String(dataModal.fee_jual));
+      setFeeBeliIntra(String(dataModal.fee_beli_intra))
+      setFeeJualIntra(String(dataModal.fee_jual_intra))
+    }
+  },[visible])
+  
   const dispatch = useDispatch();
 
   const handleInputAplikasi = (value) => {
@@ -73,9 +85,9 @@ const ModalBroker = () => {
         ]
       )
     } else {
-      dispatch(addBrokerDetail({aplikasi, sekuritas, feeBeli, feeJual, feeBeliIntra, feeJualIntra}))
+      dispatch(editBroker({aplikasi, sekuritas, feeBeli, feeJual, feeBeliIntra, feeJualIntra, index}))
       handleResetModal()
-      setModalVisible(!modalVisible)
+      handleModalEditVisible()
     }
   }
 
@@ -94,14 +106,14 @@ const ModalBroker = () => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={visible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          handleModalEditVisible();
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Isilah beberapa bagian di bawah ini:</Text>
+            <Text style={styles.modalText}>Silakan mengubah data-data di bawah ini:</Text>
             <View style={{flexDirection:'row', justifyContent:"flex-start"}}>
               <View style={styles.titleInput}>
                 <View>
@@ -175,7 +187,7 @@ const ModalBroker = () => {
             <View style={{flexDirection:'row', justifyContent:'space-around',}}>
               <Pressable
                 style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button, {height: window.height * 0.07, width: window.width * 0.3}]}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() => handleModalEditVisible()}
               >
                 <Text style={styles.textStyle}>Kembali</Text>
               </Pressable>
@@ -194,18 +206,12 @@ const ModalBroker = () => {
           </View>
         </View>
       </Modal>
-      <Pressable
-        style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#4DC7A4"},styles.button, {height: window.height * 0.065, width: window.width * 0.45}]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Tambah Broker/Sekuritas</Text>
-      </Pressable>
     </View>
     </TouchableWithoutFeedback>
   )
 }
 
-export default ModalBroker
+export default ModalEditBroker
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -232,12 +238,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    height:50,
     justifyContent:'center',
     alignItems:'center'
-  },
-  buttonOpen: {
-    width: 180,
   },
   textStyle: {
     color: "white",
