@@ -1,6 +1,5 @@
 import React from 'react'
-import { View, Text, SafeAreaView, StyleSheet, ToastAndroid, BackHandler } from 'react-native'
-import {useSelector} from 'react-redux'
+import { View, Text, SafeAreaView, StyleSheet, BackHandler } from 'react-native'
 
 import Button from '../components/Button'
 import Title from '../components/Title'
@@ -17,7 +16,7 @@ const HomeScreen = ({navigation}) => {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <Title title={"Kalkulator Saham Indonesia"}/>
+      <Title title={"Kalkulator Profit/Loss Saham Indonesia"}/>
       <View style={styles.buttonContainer}>
         <Button onPress={navigateToProfitScreen} title={"Profit/Loss Transaksi"} backgroundColor="#8ac926"/>
         <Button onPress={navigateToFeeTransaksi} title={"Fee Transaksi"} backgroundColor="#1982c4"/>

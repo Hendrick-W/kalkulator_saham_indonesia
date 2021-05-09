@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { 
-  StyleSheet, Text, View, Modal, Pressable, TextInput, Alert, TouchableWithoutFeedback, Keyboard 
+  StyleSheet, Text, View, Modal, Pressable, TextInput, Alert, TouchableWithoutFeedback, Keyboard, useWindowDimensions
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { addBrokerDetail } from '../config/actions'
@@ -14,6 +14,7 @@ const ModalBroker = () => {
   const [feeJual, setFeeJual] = useState('');
   const [feeBeliIntra, setFeeBeliIntra] = useState('');
   const [feeJualIntra, setFeeJualIntra] = useState('');
+  const window = useWindowDimensions();
 
   const dispatch = useDispatch();
 
@@ -173,13 +174,13 @@ const ModalBroker = () => {
             </View>
             <View style={{flexDirection:'row', justifyContent:'space-around',}}>
               <Pressable
-                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button, {height: window.height * 0.07, width: window.width * 0.3}]}
                 onPress={() => setModalVisible(!modalVisible)}
               >
                 <Text style={styles.textStyle}>Kembali</Text>
               </Pressable>
               <Pressable
-                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#2196F3"},styles.button]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#2196F3"},styles.button, {height: window.height * 0.07, width: window.width * 0.3}]}
                 onPress={() => {
                   handleSimpan()
                 }}
@@ -194,7 +195,7 @@ const ModalBroker = () => {
         </View>
       </Modal>
       <Pressable
-        style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#4DC7A4"},styles.button, styles.buttonOpen]}
+        style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#4DC7A4"},styles.button, {height: window.height * 0.065, width: window.width * 0.45}]}
         onPress={() => setModalVisible(true)}
       >
         <Text style={styles.textStyle}>Tambah Broker/Sekuritas</Text>

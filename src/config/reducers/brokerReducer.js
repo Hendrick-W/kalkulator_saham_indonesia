@@ -95,6 +95,11 @@ const brokerReducer = (state = initialState, action) => {
       const position = state.data.findIndex(data => data.index === index)
       const data = [...state.data]
       data[position].aplikasi = aplikasiValue
+      data[position].sekuritas = sekuritasValue
+      data[position].fee_beli = feeBeliValue
+      data[position].fee_jual = feeJualValue
+      data[position].fee_beli_intra = feeBeliIntraValue
+      data[position].fee_jual_intra = feeJualIntraValue
       return {
         ...state,
         data

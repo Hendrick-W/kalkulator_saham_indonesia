@@ -1,11 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const BrokerList = ({
   index, sekuritas, aplikasi, fee_beli, fee_jual, fee_beli_intra, fee_jual_intra, handleModalDeleteVisible, handleModalEditVisible, handleIndexBroker}) => {
+  const window = useWindowDimensions();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {height: window.height * 0.2}]}>
       <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:10}}>
         <Text style={styles.broker}>{aplikasi} / {sekuritas.length < 15 ?
           `${sekuritas}`:

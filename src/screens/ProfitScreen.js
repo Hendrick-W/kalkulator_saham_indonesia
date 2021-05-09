@@ -1,25 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { 
-  StyleSheet, SafeAreaView, Text, View, TextInput, Switch, Pressable, Alert, TouchableWithoutFeedback, Keyboard,
-} from 'react-native'
-import {Picker} from '@react-native-picker/picker'
-import {useSelector, useDispatch} from 'react-redux'
-import BigNumber from 'bignumber.js'
+  StyleSheet, SafeAreaView, Text, View, TextInput, Switch, Pressable, Alert, TouchableWithoutFeedback, Keyboard, useWindowDimensions
+} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 
 const ProfitScreen = () => {
-  const [hargaBeli, setHargaBeli] = useState()
-  const [hargaJual, setHargaJual] = useState()
-  const [jmlLot, setJmlLot] = useState()
-  const [isIntraDay, setIntraDay] = useState(false)
-  const [selectedBroker, setSelectedBroker] = useState(-1)
+  const [hargaBeli, setHargaBeli] = useState();
+  const [hargaJual, setHargaJual] = useState();
+  const [jmlLot, setJmlLot] = useState();
+  const [isIntraDay, setIntraDay] = useState(false);
+  const [selectedBroker, setSelectedBroker] = useState(-1);
   const listBroker = useSelector(state=>state.broker.data);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const [totalBeli, setTotalBeli] = useState()
-  const [totalJual, setTotalJual] = useState()
-  const [totalTransaksi, setTotalTransaksi] = useState()
-  const [presentase, setPresentase] = useState()
+  const [totalBeli, setTotalBeli] = useState();
+  const [totalJual, setTotalJual] = useState();
+  const [totalTransaksi, setTotalTransaksi] = useState();
+  const [presentase, setPresentase] = useState();
 
-  BigNumber.config({ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN})
+  const window = useWindowDimensions();
+
+  BigNumber.config({ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN});
+
+  useEffect(()=> {
+    setSelectedIndex(listBroker.findIndex(data => data.index == selectedBroker))
+  }, [selectedBroker])
 
   const handleHargaBeli = (value) => {
     if(value.length == 1 || value == '' || (value.match(/\./g) || []).length == 1) {
@@ -73,11 +80,11 @@ const ProfitScreen = () => {
         ]
       )
     } else {
-      const fee_beli = isIntraDay ? listBroker[selectedBroker].fee_beli_intra/100 + 1 : listBroker[selectedBroker].fee_beli/100 + 1
+      const fee_beli = isIntraDay ? listBroker[selectedIndex].fee_beli_intra/100 + 1 : listBroker[selectedIndex].fee_beli/100 + 1
       let hb = new BigNumber(hargaBeli)
       const total_beli = hb.multipliedBy(jmlLot).multipliedBy(fee_beli).multipliedBy(100).decimalPlaces(0)
       
-      const fee_jual = isIntraDay ? 1 - listBroker[selectedBroker].fee_jual_intra/100 : 1 - listBroker[selectedBroker].fee_jual/100
+      const fee_jual = isIntraDay ? 1 - listBroker[selectedIndex].fee_jual_intra/100 : 1 - listBroker[selectedIndex].fee_jual/100
       let hj = hargaJual == '.' ? new BigNumber(0) : new BigNumber(hargaJual)
       const total_jual = hj.multipliedBy(jmlLot).multipliedBy(fee_jual).multipliedBy(100).decimalPlaces(0)
 
@@ -91,6 +98,8 @@ const ProfitScreen = () => {
     }
 
   }
+  console.log(listBroker)
+  console.log("debug", selectedIndex, selectedBroker)
   
   return (
     <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
@@ -101,7 +110,7 @@ const ProfitScreen = () => {
           <Text style={styles.textInputTitle}>Harga Beli (Rp)</Text>
           <View style={styles.textInputContainer}>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput, {height: window.height * 0.05}]}
               underlineColorAndroid="transparent"
               value={hargaBeli}
               placeholder="Contoh: 800, 1000, atau 2500"
@@ -114,7 +123,7 @@ const ProfitScreen = () => {
           <Text style={styles.textInputTitle}>Harga Jual (Rp)</Text>
           <View style={styles.textInputContainer}>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput, {height: window.height * 0.05}]}
               underlineColorAndroid="transparent"
               value={hargaJual}
               placeholder="Contoh: 800, 1000, atau 2500"
@@ -127,7 +136,7 @@ const ProfitScreen = () => {
           <Text style={styles.textInputTitle}>Jumlah lot</Text>
           <View style={styles.textInputContainer}>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput, {height: window.height * 0.05}]}
               underlineColorAndroid="transparent"
               value={jmlLot}
               placeholder="Contoh: 1, 50, atau 100"
@@ -162,18 +171,18 @@ const ProfitScreen = () => {
           </Picker>
           </View>
         </View>
-        {selectedBroker != -1 &&<> 
+        {selectedBroker != -1 && selectedIndex != -1 &&<> 
         <View style={[styles.descriptionContainer]}>
           {
             isIntraDay === false &&
             <>
             <View style={styles.feeInfo}>
               <Text style={{color:"#767577", fontWeight:'bold'}}>Fee Beli</Text>
-              <Text style={{color:"#767577"}}>{listBroker[selectedBroker].fee_beli}%</Text>
+              <Text style={{color:"#767577"}}>{listBroker[selectedIndex].fee_beli}%</Text>
             </View>
             <View style={styles.feeInfo}>
               <Text style={{color:"#767577", fontWeight:'bold'}}>Fee Jual</Text>
-              <Text style={{color:"#767577"}}>{listBroker[selectedBroker].fee_jual}%</Text>
+              <Text style={{color:"#767577"}}>{listBroker[selectedIndex].fee_jual}%</Text>
             </View>
             </>
           }
@@ -182,11 +191,11 @@ const ProfitScreen = () => {
             <>
             <View style={styles.feeInfo}>
               <Text style={{color:"#767577", fontWeight:'bold'}}>Fee Beli (Intraday)</Text>
-              <Text style={{color:"#767577"}}>{listBroker[selectedBroker].fee_beli_intra}%</Text>
+              <Text style={{color:"#767577"}}>{listBroker[selectedIndex].fee_beli_intra}%</Text>
             </View>
             <View style={styles.feeInfo}>
               <Text style={{color:"#767577", fontWeight:'bold'}}>Fee Jual (Intraday)</Text>
-              <Text style={{color:"#767577"}}>{listBroker[selectedBroker].fee_jual_intra}%</Text>
+              <Text style={{color:"#767577"}}>{listBroker[selectedIndex].fee_jual_intra}%</Text>
             </View>
             </>
           }
@@ -196,10 +205,10 @@ const ProfitScreen = () => {
         }
       </View>
       <View style={styles.buttonGroup}>
-        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#ff595e"},styles.button]} onPress={handleReset}>
+        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#ff595e"},styles.button, {height: window.height * 0.06, width: window.width * 0.35}]} onPress={handleReset}>
           <Text style={styles.textStyle}>Reset</Text>
         </Pressable>
-        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#4DC7A4"}, styles.button]} onPress={handleHitung}>
+        <Pressable style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#4DC7A4"}, styles.button, {height: window.height * 0.06, width: window.width * 0.35}]} onPress={handleHitung}>
           <Text style={styles.textStyle}>Hitung</Text>
         </Pressable>
       </View>
@@ -213,10 +222,10 @@ const ProfitScreen = () => {
           </View>
         </View>
         <View style={{flexDirection:'row'}}>
-          <View style={styles.netValue}>
+          <View style={[styles.netValue, { height: window.height * 0.052}]}>
             <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{!!totalBeli ? `Rp ${totalBeli}` : ''}</Text>
           </View>
-          <View style={styles.netValue}>
+          <View style={[styles.netValue, { height: window.height * 0.052}]}>
             <Text style={{ textAlign: "center", fontSize: 20}} adjustsFontSizeToFit>{!!totalJual ? `Rp ${totalJual}` : ''}</Text>
           </View>
         </View>
@@ -229,7 +238,7 @@ const ProfitScreen = () => {
           </Text>
         </View>
         <View style={{flexDirection:'row'}}>
-          <View style={styles.netValue}>
+          <View style={[styles.netValue, { height: window.height * 0.052}]}>
             <Text style={{ textAlign: "center", fontSize: 20}} selectable adjustsFontSizeToFit>{!!totalTransaksi ? `Rp ${totalTransaksi} (${new BigNumber(presentase).toFormat(2)}%)` : ''}</Text>
           </View>
         </View>
@@ -265,7 +274,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     },
   textInput: {
-    height: 40,
     padding: 5,
     fontSize: 14,
   },
@@ -288,11 +296,9 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
     elevation: 2,
-    height:50,
     justifyContent:'center',
     alignItems:'center',
     marginTop: 3,
-    width: 170,
   },
   buttonGroup: {
     flexDirection: 'row',
@@ -326,7 +332,6 @@ const styles = StyleSheet.create({
   netValue: {
     flex: 1,
     borderWidth: 1,
-    height: 40,
   },
   totalTransaksi: {
     flex: 1

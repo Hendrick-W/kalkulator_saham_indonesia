@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { 
-  StyleSheet, Text, View, Modal, Pressable, TextInput, Alert, TouchableWithoutFeedback, Keyboard 
+  StyleSheet, Text, View, Modal, Pressable, TextInput, Alert, TouchableWithoutFeedback, Keyboard, useWindowDimensions
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { editBroker } from '../config/actions'
@@ -14,7 +14,8 @@ const ModalEditBroker = ({visible, index, handleModalEditVisible}) => {
   const [feeJual, setFeeJual] = useState();
   const [feeBeliIntra, setFeeBeliIntra] = useState();
   const [feeJualIntra, setFeeJualIntra] = useState();
-  
+  const window = useWindowDimensions();
+
   useEffect(()=>{
     if(visible){
       const dataModal = listBroker.find(broker => broker.index === index)
@@ -185,13 +186,13 @@ const ModalEditBroker = ({visible, index, handleModalEditVisible}) => {
             </View>
             <View style={{flexDirection:'row', justifyContent:'space-around',}}>
               <Pressable
-                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button, {height: window.height * 0.07, width: window.width * 0.3}]}
                 onPress={() => handleModalEditVisible()}
               >
                 <Text style={styles.textStyle}>Kembali</Text>
               </Pressable>
               <Pressable
-                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#2196F3"},styles.button]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#2196F3"},styles.button, {height: window.height * 0.07, width: window.width * 0.3}]}
                 onPress={() => {
                   handleSimpan()
                 }}
@@ -237,7 +238,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    height:50,
     justifyContent:'center',
     alignItems:'center'
   },

@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, Modal, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Modal, Pressable, useWindowDimensions } from 'react-native'
 import { useDispatch } from 'react-redux'
 import {
   deleteBroker,
@@ -7,6 +7,7 @@ import {
 
 const ModalDeleteBroker = ({visible, index, handleModalDeleteVisible}) => {
   const dispatch = useDispatch();
+  const window = useWindowDimensions();
 
   const handleDelete = (index) => {
     dispatch(deleteBroker(index))
@@ -25,9 +26,9 @@ const ModalDeleteBroker = ({visible, index, handleModalDeleteVisible}) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Anda yakin ingin menghilangkan data ini?</Text>
-            <View style={{flexDirection:'row', justifyContent:'space-around', width: "70%"}}>
+            <View style={{flexDirection:'row', justifyContent:'space-between', width: window.width * 0.5}}>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button, {height: window.height * 0.07, width: window.width * 0.2}]}
                 onPress={() =>
                   handleModalDeleteVisible()
                 }
@@ -35,7 +36,7 @@ const ModalDeleteBroker = ({visible, index, handleModalDeleteVisible}) => {
                 <Text style={styles.textStyle}>Tidak</Text>
               </Pressable>
               <Pressable
-                style={[styles.button, styles.buttonDelete]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#2196F3"},styles.button, {height: window.height * 0.07, width: window.width * 0.2}]}
                 onPress={() =>{ 
                   handleDelete(index)
                   handleModalDeleteVisible()
@@ -78,21 +79,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    height:50,
     justifyContent:'center',
     alignItems:'center',
-  },
-  buttonOpen: {
-    backgroundColor: "#8c2020",
-    width: 180,
-  },
-  buttonClose: {
-    backgroundColor: "#8c2020",
-    width:70,
-  },
-  buttonDelete: {
-    backgroundColor:"#2196F3",
-    width:70,
   },
   textStyle: {
     color: "white",

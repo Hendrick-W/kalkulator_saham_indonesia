@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, Modal, Pressable, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Modal, Pressable, useWindowDimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   defaultsBrokerDetail,
@@ -8,7 +8,7 @@ import {
 const ModalDefault = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const listBroker = useSelector(state=>state.broker.data);
+  const window = useWindowDimensions();
 
   const defaultBrokerDetail = () => {
     dispatch(defaultsBrokerDetail())
@@ -29,13 +29,13 @@ const ModalDefault = () => {
             <Text style={styles.modalText}>Anda yakin ingin list broker Anda kembali menjadi list broker dari developer (yang hanya ada 6)?</Text>
             <View style={{flexDirection:'row', justifyContent:'space-around', width: "70%"}}>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button, {height: window.height * 0.07, width: window.width * 0.2}]}
                 onPress={() => setModalVisible(!modalVisible)}
               >
                 <Text style={styles.textStyle}>Tidak</Text>
               </Pressable>
               <Pressable
-                style={[styles.button, styles.buttonSave]}
+                style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#2196F3"},styles.button, {height: window.height * 0.07, width: window.width * 0.2}]}
                 onPress={() =>{ 
                   defaultBrokerDetail()
                   setModalVisible(!modalVisible)
@@ -48,7 +48,7 @@ const ModalDefault = () => {
         </View>
       </Modal>
       <Pressable
-        style={[styles.button, styles.buttonOpen]}
+        style={({pressed}) => [{backgroundColor: pressed ? "#ddd" : "#8c2020"},styles.button, {height: window.height * 0.065, width: window.width * 0.45}]}
         onPress={() => setModalVisible(true)}
       >
         <Text style={styles.textStyle}>Reset</Text>
@@ -84,21 +84,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    height:50,
     justifyContent:'center',
     alignItems:'center',
-  },
-  buttonOpen: {
-    backgroundColor: "#8c2020",
-    width: 180,
-  },
-  buttonClose: {
-    backgroundColor: "#8c2020",
-    width:70,
-  },
-  buttonSave: {
-    backgroundColor:"#2196F3",
-    width:70,
   },
   textStyle: {
     color: "white",
