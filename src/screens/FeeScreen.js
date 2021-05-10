@@ -3,6 +3,8 @@ import {
   StyleSheet, Text, View, SafeAreaView, FlatList,
 } from 'react-native'
 import {useSelector, useDispatch} from 'react-redux'
+import admob, { MaxAdContentRating } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
 import SearchBar from '../components/SearchBar'
 import BrokerList from '../components/BrokerList'
@@ -21,6 +23,24 @@ const FeeScreen = () => {
   const [indexDeleteBroker, setIndexDeleteBroker] = useState(0)
   const [indexEditBroker, setIndexEditBroker] = useState(0)
   const [indexBroker, setIndexBroker] = useState(0)
+
+  useEffect(()=> {
+    admob()
+    .setRequestConfiguration({
+      // Update all future requests suitable for parental guidance
+      maxAdContentRating: MaxAdContentRating.G,
+
+      // Indicates that you want your content treated as child-directed for purposes of COPPA.
+      tagForChildDirectedTreatment: false,
+
+      // Indicates that you want the ad request to be handled in a
+      // manner suitable for users under the age of consent.
+      tagForUnderAgeOfConsent: false,
+    })
+    .then(() => {
+      // Request config successfully set!
+    });
+  },[])
 
   const onChangeText = useCallback((value) => {
     setTextInput(value)
@@ -74,6 +94,13 @@ const FeeScreen = () => {
       </View>
       <ModalDeleteBroker visible={modalDeleteVisible} handleModalDeleteVisible={handleModalDeleteVisible} index={indexBroker}/>
       <ModalEditBroker visible={modalEditVisible} handleModalEditVisible={handleModalEditVisible} index={indexBroker}/>
+      <BannerAd
+        unitId={TestIds.BANNER}
+        size={BannerAdSize.FULL_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      />
     </SafeAreaView>
   )
 }
